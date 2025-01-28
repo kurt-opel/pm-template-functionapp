@@ -25,8 +25,8 @@ git clone https://github.com/kurt-opel/<new-repo-name>.git
 ### Update the Function App project names
 1. Remove the _PM.Template.FunctionApp_, and _PM.Template.FunctionApp.Models_ projects from the solution
 1. Navigate to the _src_ directory on your local machine.
-1. Update the _PM.Template.FunctionApp_ folder name to _PM.[you-app-name-here].FunctionApp_.
-1. Update the _PM.Template.FunctionApp.Models_ folder name to _PM.[you-app-name-here].FunctionApp.Models_.
+1. Update the _PM.Template.FunctionApp_ folder name to _PM.[your-app-name-here].FunctionApp_.
+1. Update the _PM.Template.FunctionApp.Models_ folder name to _PM.[your-app-name-here].FunctionApp.Models_.
 1. Update the names of the projects in their respective folders with the same naming convention.
 1. Repeat the same process of removing and renaming for the Test Project.
 1. Back in the solution, add the updated projects back to the solution.
