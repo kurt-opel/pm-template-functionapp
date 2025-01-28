@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{01E2AFAC-3
 		.gitignore = .gitignore
 		.markdownignore = .markdownignore
 		.markdownlint.json = .markdownlint.json
+		CONTRIBUTING.md = CONTRIBUTING.md
 		pm-template-functionapp.sln.DotSettings = pm-template-functionapp.sln.DotSettings
 		prettier.config.js = prettier.config.js
 		README.md = README.md
@@ -27,6 +28,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PM.Template.FunctionApp.Tests", "test\unit-tests\PM.Template.FunctionApp.Tests\PM.Template.FunctionApp.Tests.csproj", "{45270449-978D-40B0-9972-1D00601A3EBE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PM.Template.FunctionApp.Models", "src\PM.Template.FunctionApp.Models\PM.Template.FunctionApp.Models.csproj", "{AFA986C8-65C9-46F7-8961-8EE5387FE152}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{61CB589D-2532-484F-846C-823F6FF3A4FC}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\backup-repo.yml = .github\workflows\backup-repo.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
