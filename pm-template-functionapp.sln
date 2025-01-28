@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{01E2AFAC-3753-4E4E-A816-568415728183}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.markdownignore = .markdownignore
+		.markdownlint.json = .markdownlint.json
+		pm-template-functionapp.sln.DotSettings = pm-template-functionapp.sln.DotSettings
+		prettier.config.js = prettier.config.js
+		README.md = README.md
+		StyleCop.Analyzers.ruleset = StyleCop.Analyzers.ruleset
+		stylecop.json = stylecop.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{01FEFEE1-3770-4D23-98C4-E47709878C46}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{89C88EE1-6A35-492D-84C5-2915804FD1B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unit-tests", "unit-tests", "{EB37E9FF-BA21-45E2-808F-1857618D1028}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PM.Template.FunctionApp", "src\PM.Template.FunctionApp\PM.Template.FunctionApp.csproj", "{260531BD-6AAD-4ED6-A882-7CA2CE57CFD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PM.Template.FunctionApp.Tests", "test\unit-tests\PM.Template.FunctionApp.Tests\PM.Template.FunctionApp.Tests.csproj", "{45270449-978D-40B0-9972-1D00601A3EBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PM.Template.FunctionApp.Models", "src\PM.Template.FunctionApp.Models\PM.Template.FunctionApp.Models.csproj", "{AFA986C8-65C9-46F7-8961-8EE5387FE152}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{260531BD-6AAD-4ED6-A882-7CA2CE57CFD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{260531BD-6AAD-4ED6-A882-7CA2CE57CFD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{260531BD-6AAD-4ED6-A882-7CA2CE57CFD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{260531BD-6AAD-4ED6-A882-7CA2CE57CFD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45270449-978D-40B0-9972-1D00601A3EBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45270449-978D-40B0-9972-1D00601A3EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45270449-978D-40B0-9972-1D00601A3EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45270449-978D-40B0-9972-1D00601A3EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFA986C8-65C9-46F7-8961-8EE5387FE152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFA986C8-65C9-46F7-8961-8EE5387FE152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFA986C8-65C9-46F7-8961-8EE5387FE152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFA986C8-65C9-46F7-8961-8EE5387FE152}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EB37E9FF-BA21-45E2-808F-1857618D1028} = {89C88EE1-6A35-492D-84C5-2915804FD1B0}
+		{260531BD-6AAD-4ED6-A882-7CA2CE57CFD0} = {01FEFEE1-3770-4D23-98C4-E47709878C46}
+		{45270449-978D-40B0-9972-1D00601A3EBE} = {EB37E9FF-BA21-45E2-808F-1857618D1028}
+		{AFA986C8-65C9-46F7-8961-8EE5387FE152} = {01FEFEE1-3770-4D23-98C4-E47709878C46}
+	EndGlobalSection
+EndGlobal
