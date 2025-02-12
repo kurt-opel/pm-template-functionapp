@@ -1,0 +1,162 @@
+name: Build, Test, and Deploy the Function App
+
+on:
+  push:
+    branches:
+      - master # change to the actual development, QA, Stage and Production branch names
+
+  pull_request:
+    branches:
+      - master # change to the actual development, QA, Stage and Production branch names
+
+  workflow_dispatch:
+
+concurrency:
+  group: build-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FUNCTION_STARTUP_ASSEMBLY_PATH: ./src/PM.Template.FunctionApp/bin/Release/net8.0/PM.Template.FunctionApp.dll # ==== the relative path to the compiled application's startup assembly
+  AZURE_FUNCTION_APP_PACKAGE_FOLDER: function-app-package # ========================================================= the folder in which to store the function app package
+  BUILD_CONFIGURATION: Release # ==================================================================================== the build configuration to use
+  DOTNET_VERSION: 8.0.x # =========================================================================================== the .NET version to use
+  PUBLISH_OUTPUT_FOLDER: publish-output # =========================================================================== the folder in which to store the published function app
+  PUBLISH_PROJECT_PATH: ./src/PM.Template.FunctionApp/PM.Template.FunctionApp.csproj # ============================== the path to the project to publish
+  SOLUTION_PATH: ./pm-template-functionapp.sln # ==================================================================== the path to the solution *.sln file
+  SWAGGER_DOCUMENT_NAME: v1 # ======================================================================================= the name of the swagger document to retrieve, as configured in Program class
+  SWAGGER_FILE_NAME: swagger.json # ================================================================================= the name of the swagger file to generate
+  SWAGGER_OUTPUT_FOLDER: swagger-output # =========================================================================== the path where the swagger package will be stored
+  SWAGGER_PACKAGE_FOLDER: swagger-package # ========================================================================= the folder in which to store the swagger json
+  TEST_RESULTS_FOLDER: test-results # =============================================================================== the folder in which to store the test results
+  TEST_COVERAGE_SETTINGS_FILE_PATH: ./test/unit-tests/coverlet.runsettings # ======================================== the path to the test coverage settings file
+
+jobs:
+  build-and-test:
+    name: build and test the Function App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dependencies
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: Build
+        run: >
+          dotnet build
+          --configuration ${{ env.BUILD_CONFIGURATION }}
+          --no-restore
+          ${{ env.SOLUTION_PATH }}
+
+      - name: Test
+        run: >
+          dotnet test
+          --configuration ${{ env.BUILD_CONFIGURATION }}
+          --no-build
+          --verbosity normal
+          --results-directory ${{ env.TEST_RESULTS_FOLDER }}
+          --logger trx
+          --logger console
+          --collect:"XPlat Code Coverage"
+          --settings: ${{ env.TEST_COVERAGE_SETTINGS_FILE_PATH }}
+          ${{ env.SOLUTION_PATH }}
+
+      - name: Publish
+        run: >
+          dotnet publish
+          --configuration ${{ env.BUILD_CONFIGURATION }}
+          --no-build
+          --output ${{ env.PUBLISH_OUTPUT_FOLDER }}
+          ${{ env.PUBLISH_PROJECT_PATH }}
+
+      - name: Create Swagger output folder
+        run: |
+          mkdir ${{ env.SWAGGER_OUTPUT_FOLDER }}
+
+      - name: Generate swagger document
+        run: |
+          # create a tool manifest
+          dotnet new tool-manifest --force
+          # Install the Swashbuckle CLI tool and add it to the local manifest file
+          dotnet tool install --version 6.6.2 SwashBuckle.AspNetCore.Cli
+          # Generate the Swagger JSON file using the application's startup assembly
+          dotnet swagger tofile --output ${{ env.SWAGGER_OUTPUT_FOLDER }}/${{ env.SWAGGER_FILE_NAME }} ./${{ env.FUNCTION_STARTUP_ASSEMBLY_PATH }} ${{ env.SWAGGER_DOCUMENT_NAME }}
+
+      - name: Archive published function app
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-function-app
+          path: ${{ env.PUBLISH_OUTPUT_FOLDER }}
+          include-hidden-files: true
+          if-no-files-found: error
+
+      - name: Archive swagger document
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-swagger
+          path: ./${{ env.SWAGGER_OUTPUT_FOLDER }}
+          if-no-files-found: error
+
+  deploy-function-app:
+    name: Deploy the function app to environment
+    if: ${{ github.event_name == 'push' }}
+    runs-on: [self-hosted, windows, x64]
+    needs: build-and-test
+    permissions:
+      id-token: write
+    environment: ${{ github.ref_name == 'env-production' && 'production' || github.ref_name == 'env-staging' && 'staging' || 'development' }} # Modify to suit your needs. This assumes that a branch named 'env-production' should use the 'production' environment, a branch named 'env-staging' should use the 'staging' environment, otherwise 'development' environment will be used.
+    steps:
+      - name: Download the published function app
+        uses: actions/download-artifact@v4
+        with:
+          name: published-function-app
+          path: ${{ env.AZURE_FUNCTION_APP_PACKAGE_FOLDER }}
+
+      - name: Login to Azure with identity of hosted runner
+        run: az login --identity
+
+      - name: Fetch function app publish profile from Azure key vault
+        id: fetch-func-app-publish-profile
+        uses: azure/get-keyvault-secrets@v1
+        with:
+          keyvault: ${{ vars.AZURE_KEY_VAULT_NAME }}
+          secrets: ${{ vars.AZURE_KEY_VAULT_SECRET_NAME__FUNC_APP_PUBLISH_PROFILE }}
+
+      - name: Deploy to Azure Function App
+        uses: azure/functions-action@v1
+        with:
+          app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
+          publish-profile: ${{ steps.fetch-func-app-publish-profile.outputs[vars.AZURE_KEY_VAULT_SECRET_NAME__FUNC_APP_PUBLISH_PROFILE] }}
+          package: ${{ env.AZURE_FUNCTION_APP_PACKAGE_FOLDER }}
+
+  deploy-swagger-to-apim:
+    name: Deploy the swagger document to APIM environment
+    if: ${{ github.event_name == 'push' }}
+    runs-on: [self-hosted, windows, x64]
+    needs: deploy-function-app
+    environment: ${{ github.ref_name == 'env-production' && 'production' || github.ref_name == 'env-staging' && 'staging' || 'development' }} # Modify to suit your needs. This assumes that a branch named 'env-production' should use the 'production' environment, a branch named 'env-staging' should use the 'staging' environment, otherwise 'development' environment will be used.
+    steps:
+      - name: Download swagger document
+        uses: actions/download-artifact@v4
+        with:
+          name: published-swagger
+          path: ${{ env.SWAGGER_PACKAGE_FOLDER }}
+
+      - name: Update swagger document in APIM
+        run: >
+          az login --identity
+
+          az account set --subscription ${{ vars.SUBSCRIPTION_ID }}
+
+          az apim api import
+          --path ${{ vars.AZURE_APIM_API_PATH }}
+          --resource-group ${{ vars.AZURE_RESOURCE_GROUP }}
+          --service-name ${{ vars.AZURE_APIM_SERVICE_NAME }}
+          --specification-format "OpenApi"
+          --api-id ${{ vars.AZURE_APIM_API_ID }}
+          --specification-path ${{ env.SWAGGER_PACKAGE_FOLDER }}/${{ env.SWAGGER_FILE_NAME }}

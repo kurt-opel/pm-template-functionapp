@@ -1,8 +1,8 @@
 name: Backup Repository
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  # schedule: # ----------------------------------------------- uncomment to enable scheduled backups
+    # - cron: '0 0 * * *'
 
   pull_request:
     branches:

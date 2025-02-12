@@ -7,7 +7,6 @@
     <Company>Plante Moran</Company>
     <Description>[Function App Description here]</Description>
     <VersionPrefix>0.0.1</VersionPrefix>
-    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <DocumentationFile>bin/PM.Template.FunctionApp.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\..\StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>

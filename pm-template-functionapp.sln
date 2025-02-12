@@ -32,6 +32,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{61CB589D-2532-484F-846C-823F6FF3A4FC}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\backup-repo.yml = .github\workflows\backup-repo.yml
+		.github\workflows\build-test-deploy.yml = .github\workflows\build-test-deploy.yml
 	EndProjectSection
 EndProject
 Global

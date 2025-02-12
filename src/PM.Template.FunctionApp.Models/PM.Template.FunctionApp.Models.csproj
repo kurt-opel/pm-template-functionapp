@@ -2,9 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <Authors>[Developer Name Here]</Authors>
+    <Company>Plante Moran</Company>
+    <Description>Models for [function-app]</Description>
+    <VersionPrefix>0.0.1</VersionPrefix>
     <Nullable>enable</Nullable>
+    <CodeAnalysisRuleSet>..\..\StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\PM.Template.FunctionApp.Models.xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.18.1" />
